@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speaking Practice — LinguaRise</title>
+
+<script src="../js/theme.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/auth-guard.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=500;600;700&family=Inter:wght=400;500;600;700&family=JetBrains+Mono:wght=500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/app-layout.css">
+
+<style>
+  /* CSS-kan wuxuu xallinayaa cilladda responsive-ka ee desktop, tablet iyo mobile */
+  .app-content-wrapper {
+    flex: 1;
+    min-width: 0; 
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* Hubinta in lesson-grid-ku uu si qurux badan u dhex fariisto shaashad kasta */
+  .lesson-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: var(--space-5);
+    width: 100%;
+  }
+
+  /* Qaabaynta kaarka si wax kasta ay gudaha ugu jiraan */
+  .speak-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Waxay badhamada u riixaysaa hoosta mar walba */
+    min-height: 220px; /* Waxay siinaysaa kaarka dherer siman */
+    padding: var(--space-4);
+    box-sizing: border-box;
+    overflow: hidden; /* Waxay ka hortagtaa in wax ka baxaan */
+  }
+
+  /* Badhamada oo si siman u kala fariisanaaya iyagoo aan is-dul-fuulayn */
+  .speak-actions {
+    display: flex;
+    gap: var(--space-2);
+    width: 100%;
+    margin-top: auto; /* Had iyo jeer hoosta ayay ku haynaysaa */
+    flex-wrap: wrap;  /* Haddii shaashadu aad u yaraato, badhamada ayaa hoos u dhacaya */
+  }
+
+  .speak-actions .btn {
+    flex: 1; /* Labada badhanba waxay qaadanayaan boos siman oo 50% ah */
+    min-width: 110px; /* Ma oggolaanayso in badhanku aad u dhuubto */
+    justify-content: center;
+    white-space: nowrap; /* Qoraalka badhanka kama dhigayo labo xariiq */
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .lesson-locked {
+    position: relative;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  /* Styling-ka cusub ee Sidebar Scrolling-ka u oggolaanaya */
+  .app-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto; /* Waxay oggolaanaysaa in menu-yada la dhex scroll-gareeyo */
+    padding-right: var(--space-2);
+  }
+
+  /* Naqshadaynta quruxda badan ee Scrollbar-ka sidebar-ka dhexdiisa ah */
+  .sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+  }
+  .sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sidebar-nav::-webkit-scrollbar-thumb {
+    background: var(--border-color, rgba(255, 255, 255, 0.1));
+    border-radius: var(--radius-full);
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="app-sidebar">
+    <a href="../index.html" class="sidebar-logo"><span class="mark">LR</span>LinguaRise</a>
+
+    <nav class="sidebar-nav">
+      <span class="sidebar-group-label">Overview</span>
+      <a href="dashboard.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </a>
+
+      <span class="sidebar-group-label">Practice</span>
+      <a href="reading.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Reading
+      </a>
+      <a href="listening.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>
+        Listening
+      </a>
+      <a href="speaking.html" class="sidebar-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v4"/></svg>
+        Speaking
+      </a>
+      <a href="vocabulary.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg>
+        Vocabulary
+      </a>
+      <a href="grammar.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M9 3v18M9 8h.01M9 13h.01"/></svg>
+        Grammar
+      </a>
+
+      <span class="sidebar-group-label">Account</span>
+      <a href="profile.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+        Profile
+      </a>
+      <a href="settings.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+    </nav>
+
+    <div class="sidebar-footer" style="padding-top: var(--space-2); border-top: 1px solid var(--border-color);">
+      <a href="../index.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        Back to Home
+      </a>
+      <a href="#" id="logout-link" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        Log out
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN CONTENT AREA ============ -->
+  <div class="app-content-wrapper">
+    <header class="app-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="sidebar-toggle-mobile" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1>Speaking Practice</h1>
+      </div>
+
+      <button class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="knob">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-7.54-7.54A9 9 0 0 0 12 3z"/></svg>
+        </span>
+      </button>
+    </header>
+
+    <main class="app-main">
+      <p style="color:var(--text-muted); margin-bottom: var(--space-6);">Tap <strong>Example</strong> to hear the correct pronunciation, then <strong>Check</strong> and say it out loud — your microphone will be used to score your attempt.</p>
+
+      <div class="level-tabs speak-tabs"></div>
+      <div class="level-panels speak-panels"></div>
+    </main>
+  </div>
+</div>
+
+<script src="../js/progress-store.js"></script>
+<script src="../js/app-sidebar.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/speaking.js"></script>
+<script>
+  // Logout action
+  document.getElementById('logout-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.LinguaAuth.logout();
+    window.location.href = '../index.html';
+  });
+</script>
+</body>
+</html>

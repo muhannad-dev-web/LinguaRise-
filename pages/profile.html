@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — LinguaRise</title>
+
+<script src="../js/theme.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/auth-guard.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=500;600;700&family=Inter:wght=400;500;600;700&family=JetBrains+Mono:wght=500;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/app-layout.css">
+
+<style>
+  /* CSS-kan wuxuu xallinayaa cilladda responsive-ka ee desktop, tablet iyo mobile */
+  .app-content-wrapper {
+    flex: 1;
+    min-width: 0; 
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* Styling-ka Sidebar Scrolling-ka u oggolaanaya */
+  .app-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    overflow-y: auto; /* Waxay oggolaanaysaa in menu-yada la dhex scroll-gareeyo */
+    padding-right: var(--space-2);
+  }
+
+  /* Naqshadaynta quruxda badan ee Scrollbar-ka sidebar-ka dhexdiisa ah */
+  .sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+  }
+  .sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sidebar-nav::-webkit-scrollbar-thumb {
+    background: var(--border-color, rgba(255, 255, 255, 0.1));
+    border-radius: var(--radius-full);
+  }
+
+  /* Profile custom styling */
+  .profile-header {
+    display: flex; align-items: center; gap: var(--space-6);
+    padding: var(--space-8); margin-bottom: var(--space-8);
+  }
+  .profile-avatar-wrap { position: relative; flex-shrink: 0; }
+  .profile-avatar {
+    width: 88px; height: 88px; border-radius: 50%;
+    background: var(--gradient-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-size: var(--fs-2xl); font-weight: 700;
+    background-size: cover; background-position: center;
+  }
+  .avatar-upload-btn {
+    position: absolute; bottom: 0; right: 0;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--card); border: 2px solid var(--bg-elevated);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .avatar-upload-btn svg { width: 14px; height: 14px; }
+  .profile-name { font-size: var(--fs-2xl); }
+  .profile-email { color: var(--text-muted); font-size: var(--fs-sm); margin-top: 4px; }
+  .profile-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: var(--fs-xs);
+    background: var(--gradient-soft); color: var(--primary);
+    padding: 5px 12px; border-radius: var(--radius-full); margin-top: var(--space-3);
+  }
+  .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-5); }
+  .info-card { padding: var(--space-6); }
+  .info-card .label { font-size: var(--fs-xs); color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .info-card .value { font-family: var(--font-mono); font-size: var(--fs-lg); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="app-sidebar">
+    <a href="../index.html" class="sidebar-logo"><span class="mark">LR</span>LinguaRise</a>
+
+    <nav class="sidebar-nav">
+      <span class="sidebar-group-label">Overview</span>
+      <a href="dashboard.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </a>
+
+      <span class="sidebar-group-label">Practice</span>
+      <a href="reading.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Reading
+      </a>
+      <a href="listening.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/></svg>
+        Listening
+      </a>
+      <a href="speaking.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v4"/></svg>
+        Speaking
+      </a>
+      <a href="vocabulary.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg>
+        Vocabulary
+      </a>
+      <a href="grammar.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M9 3v18M9 8h.01M9 13h.01"/></svg>
+        Grammar
+      </a>
+
+      <span class="sidebar-group-label">Account</span>
+      <a href="profile.html" class="sidebar-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+        Profile
+      </a>
+    </nav>
+
+    <div class="sidebar-footer" style="padding-top: var(--space-2); border-top: 1px solid var(--border-color);">
+      <a href="../index.html" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        Back to Home
+      </a>
+      <a href="#" id="logout-link" class="sidebar-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        Log out
+      </a>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN CONTENT AREA ============ -->
+  <div class="app-content-wrapper">
+    <header class="app-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="sidebar-toggle-mobile" aria-label="Menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1>My Profile</h1>
+      </div>
+
+      <button class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="knob">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-7.54-7.54A9 9 0 0 0 12 3z"/></svg>
+        </span>
+      </button>
+    </header>
+
+    <main class="app-main">
+      <div class="card profile-header">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="profile-avatar">?</div>
+          <button class="avatar-upload-btn" id="avatar-upload-btn" aria-label="Upload picture">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v4M9 21H5a2 2 0 0 1-2-2v-4M21 3l-9 9M15 21h4a2 2 0 0 0 2-2v-4"/></svg>
+          </button>
+          <input type="file" id="avatar-input" accept="image/*" style="display:none;">
+        </div>
+        <div>
+          <div class="profile-name" id="profile-name">—</div>
+          <div class="profile-email" id="profile-email">—</div>
+          <div class="profile-badge">🎯 Level <span id="profile-level">A1</span></div>
+        </div>
+      </div>
+
+      <div class="info-grid" style="margin-bottom: var(--space-8);">
+        <div class="card info-card"><div class="label">Total XP</div><div class="value" id="p-xp">0</div></div>
+        <div class="card info-card"><div class="label">Day Streak</div><div class="value" id="p-streak">1</div></div>
+        <div class="card info-card"><div class="label">Listening Complete</div><div class="value" id="p-listening">0 / 36</div></div>
+        <div class="card info-card"><div class="label">Speaking Average</div><div class="value" id="p-speaking">0%</div></div>
+        <div class="card info-card"><div class="label">Reading Complete</div><div class="value" id="p-reading">0 / 36</div></div>
+        <div class="card info-card"><div class="label">Vocabulary Complete</div><div class="value" id="p-vocabulary">0 / 36</div></div>
+        <div class="card info-card"><div class="label">Grammar Complete</div><div class="value" id="p-grammar">0 / 36</div></div>
+        <div class="card info-card"><div class="label">Member Since</div><div class="value" id="p-since" style="font-size:var(--fs-base);">—</div></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="../js/progress-store.js"></script>
+<script src="../js/app-sidebar.js"></script>
+<script>
+  const user = window.LinguaAuth.currentUser();
+
+  function renderAvatar(el, size) {
+    if (user.avatar) {
+      el.style.backgroundImage = `url(${user.avatar})`;
+      el.textContent = '';
+    } else {
+      el.textContent = user.name.trim().split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    }
+  }
+
+  if (user) {
+    document.getElementById('profile-name').textContent = user.name;
+    document.getElementById('profile-email').textContent = user.email;
+    document.getElementById('profile-level').textContent = user.level || 'A1';
+    document.getElementById('p-since').textContent = new Date(user.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    renderAvatar(document.getElementById('profile-avatar'));
+  }
+
+  document.getElementById('avatar-upload-btn').addEventListener('click', () => {
+    document.getElementById('avatar-input').click();
+  });
+
+  document.getElementById('avatar-input').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      window.LinguaAuth.updateUser({ avatar: reader.result });
+      renderAvatar(document.getElementById('profile-avatar'));
+      window.showToast?.('Sawirka waa la beddelay ✅');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('logout-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.LinguaAuth.logout();
+    window.location.href = '../index.html';
+  });
+
+  const stats = window.LinguaProgress.stats(36, 12);
+  document.getElementById('p-xp').textContent = stats.xp;
+  document.getElementById('p-streak').textContent = stats.streak;
+  document.getElementById('p-listening').textContent = `${stats.listeningDone} / 36`;
+  document.getElementById('p-speaking').textContent = stats.speakingAvg + '%';
+
+  const sectionStats = window.LinguaProgress.sectionStats ? window.LinguaProgress.sectionStats() : { reading: 0, vocabulary: 0, grammar: 0 };
+  document.getElementById('p-reading').textContent = `${sectionStats.reading} / 36`;
+  document.getElementById('p-vocabulary').textContent = `${sectionStats.vocabulary} / 36`;
+  document.getElementById('p-grammar').textContent = `${sectionStats.grammar} / 36`;
+</script>
+</body>
+</html>

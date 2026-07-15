@@ -1,0 +1,94 @@
+/* ============================================
+   LINGUARISE — DESIGN TOKENS
+   Fonts: Space Grotesk (display) / Inter (body) / JetBrains Mono (data/utility)
+   ============================================ */
+
+:root {
+  /* --- Brand colors (fixed across themes) --- */
+  --primary: #2563EB;
+  --primary-dark: #1D4ED8;
+  --secondary: #7C3AED;
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  /* --- Light theme (default) --- */
+  --bg: #F8FAFC;
+  --bg-elevated: #FFFFFF;
+  --card: #FFFFFF;
+  --card-border: #E2E8F0;
+  --text: #1E293B;
+  --text-muted: #64748B;
+  --text-soft: #94A3B8;
+  --accent: #38BDF8;
+  --nav-bg: rgba(248, 250, 252, 0.75);
+  --shadow-color: 220 60% 30%;
+
+  /* --- Gradients --- */
+  --gradient-primary: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  --gradient-soft: linear-gradient(180deg, rgba(37,99,235,0.08) 0%, rgba(124,58,237,0.02) 100%);
+
+  /* --- Typography --- */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* --- Type scale --- */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem;
+  --fs-2xl: 1.75rem;
+  --fs-3xl: 2.25rem;
+  --fs-4xl: 3rem;
+  --fs-5xl: 3.75rem;
+
+  /* --- Spacing --- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* --- Radius --- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 999px;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 2px 8px hsl(var(--shadow-color) / 0.06);
+  --shadow-md: 0 8px 24px hsl(var(--shadow-color) / 0.10);
+  --shadow-lg: 0 20px 48px hsl(var(--shadow-color) / 0.16);
+  --shadow-glow: 0 0 0 1px rgba(37,99,235,0.12), 0 8px 32px rgba(37,99,235,0.18);
+
+  /* --- Transitions --- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-fast: 0.18s var(--ease);
+  --t-med: 0.35s var(--ease);
+  --t-slow: 0.6s var(--ease);
+
+  /* --- Layout --- */
+  --container: 1200px;
+  --nav-height: 76px;
+}
+
+/* --- Dark theme --- */
+[data-theme="dark"] {
+  --bg: #0F172A;
+  --bg-elevated: #131F35;
+  --card: #1E293B;
+  --card-border: #2E3B52;
+  --text: #F8FAFC;
+  --text-muted: #A9B8CC;
+  --text-soft: #64748B;
+  --accent: #38BDF8;
+  --nav-bg: rgba(15, 23, 42, 0.7);
+  --shadow-color: 220 80% 4%;
+  --gradient-soft: linear-gradient(180deg, rgba(56,189,248,0.08) 0%, rgba(124,58,237,0.03) 100%);
+}
