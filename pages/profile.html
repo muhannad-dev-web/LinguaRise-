@@ -90,6 +90,57 @@
   .info-card { padding: var(--space-6); }
   .info-card .label { font-size: var(--fs-xs); color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
   .info-card .value { font-family: var(--font-mono); font-size: var(--fs-lg); font-weight: 700; }
+
+  /* ==========================================
+     KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
+     ========================================== */
+  @media (max-width: 768px) {
+    .app-shell {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* In sidebar-ka la qariyo marka hore */
+    .app-sidebar {
+      position: fixed;
+      left: -280px;
+      top: 0;
+      width: 260px;
+      background: var(--bg-surface, #111827);
+      z-index: 999;
+      transition: left 0.3s ease;
+      box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Marka la furo (active) */
+    .app-sidebar.active {
+      left: 0;
+    }
+
+    /* Hagaajinta Topbar-ka iyo Main-ka ee mobilada */
+    .app-topbar {
+      padding: var(--space-4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .app-main {
+      padding: var(--space-4) !important;
+    }
+
+    /* Hagaajinta grid-ka iyo faahfaahinta profile-ka ee mobilada */
+    .profile-header {
+      flex-direction: column;
+      text-align: center;
+      padding: var(--space-6);
+    }
+
+    .info-grid {
+      grid-template-columns: 1fr; /* Wuxuu noqonayaa hal tiir (single column) mobilka dushiisa */
+    }
+  }
 </style>
 </head>
 <body>
@@ -97,7 +148,7 @@
 <div class="app-shell">
 
   <!-- ============ SIDEBAR ============ -->
-  <aside class="app-sidebar">
+  <aside class="app-sidebar" id="appSidebar">
     <a href="../index.html" class="sidebar-logo"><span class="mark">LR</span>LinguaRise</a>
 
     <nav class="sidebar-nav">
@@ -152,7 +203,7 @@
   <div class="app-content-wrapper">
     <header class="app-topbar">
       <div style="display:flex; align-items:center; gap:12px;">
-        <button class="sidebar-toggle-mobile" aria-label="Menu">
+        <button class="sidebar-toggle-mobile" id="mobileMenuBtn" aria-label="Menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
         <h1>My Profile</h1>
@@ -198,6 +249,24 @@
 <script src="../js/progress-store.js"></script>
 <script src="../js/app-sidebar.js"></script>
 <script>
+  // Script-ka furaya/xiraya Menu-ga marka mobilka la joogo
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const appSidebar = document.getElementById('appSidebar');
+
+  if (mobileMenuBtn && appSidebar) {
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      appSidebar.classList.toggle('active');
+    });
+
+    // Marka meel ka baxsan sidebar-ka la riixo inuu xirmo
+    document.addEventListener('click', (e) => {
+      if (appSidebar.classList.contains('active') && !appSidebar.contains(e.target) && e.target !== mobileMenuBtn) {
+        appSidebar.classList.remove('active');
+      }
+    });
+  }
+
   const user = window.LinguaAuth.currentUser();
 
   function renderAvatar(el, size) {
