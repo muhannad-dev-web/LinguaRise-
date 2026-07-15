@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Log In — LinguaRise</title>
+<title>Sign In / Sign Up — LinguaRise</title>
 
 <script src="../js/theme.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=500;600;700&family=Inter:wght=400;500;600;700&family=JetBrains+Mono:wght=500;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="../css/variables.css">
 <link rel="stylesheet" href="../css/base.css">
@@ -18,86 +18,379 @@
 <style>
   body {
     min-height: 100vh;
+    margin: 0;
+    display: flex;
+    background: var(--bg);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  /* Split Layout Container */
+  .auth-split-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* LEFT SIDE: DESIGN PANEL (Centered & Premium Typography) */
+  .auth-design-side {
+    flex: 1.2;
+    background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Dhexda toosan (vertical center) */
+    align-items: center;     /* Dhexda jiifa (horizontal center) */
+    text-align: center;      /* Qoraalka oo dhan dhexda keento */
+    padding: var(--space-12) var(--space-10);
+    color: #ffffff;
+    overflow: hidden;
+  }
+
+  /* Background decorative glowing circles */
+  .auth-design-side::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    filter: blur(50px);
+    pointer-events: none;
+  }
+
+  .auth-design-side::after {
+    content: '';
+    position: absolute;
+    bottom: -15%;
+    left: -10%;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.15);
+    filter: blur(60px);
+    pointer-events: none;
+  }
+
+  /* Absolute Positioned Logo on Left Side */
+  .design-logo {
+    position: absolute;
+    top: var(--space-8);
+    left: var(--space-8);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-xl);
+    color: #ffffff;
+    text-decoration: none;
+    z-index: 2;
+  }
+
+  .design-logo-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gradient-soft);
-    padding: var(--space-6);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: var(--fs-sm);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-  .auth-wrap { width: 100%; max-width: 420px; }
-  .auth-logo {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    font-family: var(--font-display); font-weight: 700; font-size: var(--fs-xl);
+
+  /* Centered Content Styling */
+  .design-content {
+    z-index: 2;
+    max-width: 460px;
+    margin: auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .design-title {
+    font-family: var(--font-display);
+    font-size: clamp(var(--fs-2xl), 3.5vw, var(--fs-4xl));
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--space-4);
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .design-desc {
+    font-size: var(--fs-md);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+  }
+
+  /* Absolute Positioned Footer on Left Side */
+  .design-footer {
+    position: absolute;
+    bottom: var(--space-8);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: var(--fs-xs);
+    color: rgba(255, 255, 255, 0.6);
+    z-index: 2;
+    width: 100%;
+  }
+
+  /* RIGHT SIDE: AUTH FORM PANEL */
+  .auth-form-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-8);
+    background: var(--bg);
+    overflow-y: auto;
+  }
+
+  .auth-form-wrap {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  /* Mobile Logo (only visible when design side is hidden) */
+  .mobile-only-logo {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-xl);
+    margin-bottom: var(--space-8);
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .mobile-logo-mark {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: var(--fs-sm);
+  }
+
+  /* Card and Tabs styling */
+  .auth-card {
+    padding: var(--space-8);
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    border-radius: var(--radius-lg);
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: var(--space-2);
+    background: var(--bg-elevated);
+    border-radius: var(--radius-full);
+    padding: 4px;
     margin-bottom: var(--space-8);
   }
-  .auth-card { padding: var(--space-8); }
-  .auth-tabs { display: flex; gap: var(--space-2); background: var(--bg); border-radius: var(--radius-full); padding: 4px; margin-bottom: var(--space-8); }
-  .auth-tab { flex: 1; text-align: center; padding: 10px; border-radius: var(--radius-full); font-size: var(--fs-sm); font-weight: 600; color: var(--text-muted); transition: background var(--t-fast), color var(--t-fast); }
-  .auth-tab.active { background: var(--gradient-primary); color: #fff; }
-  .field { margin-bottom: var(--space-5); }
-  .field label { display: block; font-size: var(--fs-sm); font-weight: 600; margin-bottom: var(--space-2); }
-  .field input {
-    width: 100%; padding: 13px 16px; border-radius: var(--radius-sm);
-    border: 1.5px solid var(--card-border); background: var(--bg);
-    font-size: var(--fs-base); transition: border-color var(--t-fast);
+
+  .auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 11px;
+    border-radius: var(--radius-full);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: background var(--t-fast), color var(--t-fast);
+    cursor: pointer;
   }
-  .field input:focus { border-color: var(--primary); outline: none; }
-  .auth-form { display: none; }
-  .auth-form.active { display: block; }
-  .auth-error { color: var(--danger); font-size: var(--fs-sm); margin-bottom: var(--space-4); display: none; }
-  .auth-error.show { display: block; }
-  .auth-submit { width: 100%; }
-  .auth-back { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: var(--space-6); font-size: var(--fs-sm); color: var(--text-muted); }
+
+  .auth-tab.active {
+    background: var(--gradient-primary);
+    color: #fff;
+  }
+
+  .field {
+    margin-bottom: var(--space-5);
+  }
+
+  .field label {
+    display: block;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    margin-bottom: var(--space-2);
+    color: var(--text-soft);
+  }
+
+  .field input {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--card-border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: var(--fs-base);
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  }
+
+  .field input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+
+  .auth-form {
+    display: none;
+  }
+
+  .auth-form.active {
+    display: block;
+  }
+
+  .auth-error {
+    color: var(--danger);
+    font-size: var(--fs-sm);
+    margin-bottom: var(--space-4);
+    display: none;
+  }
+
+  .auth-error.show {
+    display: block;
+  }
+
+  .auth-submit {
+    width: 100%;
+    padding: 14px;
+    font-weight: 600;
+  }
+
+  .auth-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: var(--space-6);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--t-fast);
+  }
+
+  .auth-back:hover {
+    color: var(--text);
+  }
+
+  /* RESPONSIVE BREAKPOINTS */
+  @media (max-width: 900px) {
+    .auth-design-side {
+      display: none; /* Hide left panel on tablets and smaller screens */
+    }
+    
+    .mobile-only-logo {
+      display: flex; /* Show mobile-optimized logo */
+    }
+
+    .auth-form-side {
+      padding: var(--space-6);
+    }
+
+    .auth-card {
+      border: none;
+      background: transparent;
+      padding: 0;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div class="auth-wrap">
-  <a href="../index.html" class="auth-logo"><span class="mark" style="width:38px;height:38px;border-radius:11px;background:var(--gradient-primary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:var(--fs-sm);">LR</span>LinguaRise</a>
+<div class="auth-split-container">
+  
+  <!-- ============ LEFT SIDE: DESIGN PANEL ============ -->
+  <aside class="auth-design-side">
+    <a href="../index.html" class="design-logo">
+      <span class="design-logo-mark">LR</span>
+      LinguaRise
+    </a>
 
-  <div class="card auth-card">
-    <div class="auth-tabs">
-      <div class="auth-tab active" data-target="login-form">Log In</div>
-      <div class="auth-tab" data-target="signup-form">Sign Up</div>
+    <div class="design-content">
+      <h2 class="design-title">Master English, Step by Step.</h2>
+      <p class="design-desc">
+        Learn English effortlessly with immersive audio, interactive lessons, and personalized tracking. Join thousands of learners worldwide and unlock your global potential today!
+      </p>
     </div>
 
-    <!-- LOGIN -->
-    <form class="auth-form active" id="login-form">
-      <p class="auth-error" id="login-error"></p>
-      <div class="field">
-        <label for="login-email">Email</label>
-        <input type="email" id="login-email" required placeholder="you@email.com">
-      </div>
-      <div class="field">
-        <label for="login-password">Password</label>
-        <input type="password" id="login-password" required placeholder="••••••••">
-      </div>
-      <button type="submit" class="btn btn-primary auth-submit">Log In</button>
-    </form>
+    <div class="design-footer">
+      &copy; 2026 LinguaRise Inc. All rights reserved.
+    </div>
+  </aside>
 
-    <!-- SIGNUP -->
-    <form class="auth-form" id="signup-form">
-      <p class="auth-error" id="signup-error"></p>
-      <div class="field">
-        <label for="signup-name">Full name</label>
-        <input type="text" id="signup-name" required placeholder="Muhannad Mohamed">
-      </div>
-      <div class="field">
-        <label for="signup-email">Email</label>
-        <input type="email" id="signup-email" required placeholder="you@email.com">
-      </div>
-      <div class="field">
-        <label for="signup-password">Password</label>
-        <input type="password" id="signup-password" required placeholder="••••••••" minlength="4">
-      </div>
-      <button type="submit" class="btn btn-primary auth-submit">Create Account</button>
-    </form>
-  </div>
+  <!-- ============ RIGHT SIDE: FORM PANEL ============ -->
+  <main class="auth-form-side">
+    <div class="auth-form-wrap">
+      
+      <!-- Mobile Logo (only visible when left side is hidden) -->
+      <a href="../index.html" class="mobile-only-logo">
+        <span class="mobile-logo-mark">LR</span>
+        LinguaRise
+      </a>
 
-  <a href="../index.html" class="auth-back">
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    Back to Home
-  </a>
+      <div class="card auth-card">
+        <div class="auth-tabs">
+          <div class="auth-tab active" data-target="login-form">Log In</div>
+          <div class="auth-tab" data-target="signup-form">Sign Up</div>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form class="auth-form active" id="login-form">
+          <p class="auth-error" id="login-error"></p>
+          <div class="field">
+            <label for="login-email">Email Address</label>
+            <input type="email" id="login-email" required placeholder="you@email.com">
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary auth-submit">Log In</button>
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form class="auth-form" id="signup-form">
+          <p class="auth-error" id="signup-error"></p>
+          <div class="field">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" required placeholder="Muhannad Mohamed">
+          </div>
+          <div class="field">
+            <label for="signup-email">Email Address</label>
+            <input type="email" id="signup-email" required placeholder="you@email.com">
+          </div>
+          <div class="field">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" required placeholder="••••••••" minlength="4">
+          </div>
+          <button type="submit" class="btn btn-primary auth-submit">Create Account</button>
+        </form>
+      </div>
+
+      <a href="../index.html" class="auth-back">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Home
+      </a>
+    </div>
+  </main>
+  
 </div>
 
 <script src="../js/auth.js"></script>
