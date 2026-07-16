@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Favicon SVG ah oo si toos ah u dhalinaya astaanta "LR" ee Header-kaaga -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563EB'/%3E%3Ctext x='50%25' y='65%25' font-family='sans-serif' font-weight='bold' font-size='50' fill='white' text-anchor='middle'%3ELR%3C/text%3E%3C/svg%3E">
 <title>Dashboard — LinguaRise</title>
 
 <script src="../js/theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/auth-guard.js"></script>
 
@@ -49,8 +49,8 @@
   }
 
   /* ==========================================
-     DASHBOARD ENHANCEMENTS & LOOK (QURXINTA)
-     ========================================== */
+      DASHBOARD ENHANCEMENTS & LOOK (QURXINTA)
+      ========================================== */
   .app-content-wrapper {
     flex: 1;
     min-width: 0;
@@ -213,8 +213,8 @@
   }
 
   /* ==========================================
-     KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
-     ========================================== */
+      KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
+      ========================================== */
   @media (max-width: 768px) {
     .app-shell {
       display: flex;
@@ -295,7 +295,6 @@
 
 <div class="app-shell">
 
-  <!-- ============ SIDEBAR ============ -->
   <aside class="app-sidebar" id="appSidebar">
     <a href="../index.html" class="sidebar-logo"><span class="mark">LR</span>LinguaRise</a>
 
@@ -351,7 +350,6 @@
     </div>
   </aside>
 
-  <!-- ============ MAIN ============ -->
   <div class="app-content-wrapper">
     <header class="app-topbar" style="padding-left: var(--space-4); padding-right: var(--space-4);">
       <div style="display:flex; align-items:center; gap:16px;">
@@ -374,7 +372,6 @@
     </header>
 
     <main class="app-main" style="padding: var(--space-6);">
-      <!-- Welcome Banner -->
       <div class="welcome-banner">
         <h2 id="welcome-heading" style="font-size: var(--fs-2xl); font-family: 'Space Grotesk', sans-serif; font-weight: 700;">Welcome back!</h2>
         <p>Ready to level up your English skills today? Here's your overall learning progress.</p>
@@ -439,7 +436,6 @@
   </div>
 </div>
 
-<script src="../js/progress-store.js"></script>
 <script src="../js/app-sidebar.js"></script>
 <script>
   // Script-ka furaya/xiraya Menu-ga marka mobilka la joogo
@@ -460,29 +456,58 @@
     });
   }
 
-  const user = window.LinguaAuth.currentUser();
-  if (user) {
-    document.getElementById('welcome-heading').textContent = `Welcome back, ${user.name.split(' ')[0]}!`;
-    const avatarEl = document.getElementById('topbar-avatar');
-    if (user.avatar) {
-      avatarEl.style.backgroundImage = `url(${user.avatar})`;
-      avatarEl.textContent = '';
-    } else {
-      avatarEl.textContent = user.name.trim().split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+  // 🚀 KOODHKA CUSUB EE SUPABASE DHALAALINAYA
+  async function loadDashboard() {
+    try {
+      // 1. Soo qaado xogta qofka hadda fadhiya (asynchronous)
+      const user = await window.LinguaAuth.currentUser();
+      
+      if (!user) {
+        // Haddii qofna aanu saarayn, u dir login-ka
+        window.location.href = 'auth.html';
+        return;
+      }
+
+      // 2. Ku qor magaca "Welcome back, Magac!"
+      const firstName = user.name.trim().split(' ')[0];
+      document.getElementById('welcome-heading').textContent = `Welcome back, ${firstName}!`;
+
+      // 3. Deji Avatar-ka (Sawirka profile-ka)
+      const avatarEl = document.getElementById('topbar-avatar');
+      if (user.avatar) {
+        avatarEl.style.backgroundImage = `url(${user.avatar})`;
+        avatarEl.textContent = '';
+      } else {
+        avatarEl.textContent = user.name.trim().split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+      }
+
+      // 4. Kasoo qaado dhibcaha XP iyo Lesson-nada uu dhameeyay Supabase
+      const xp = user.progress ? (user.progress.xp || 0) : 0;
+      const completedList = user.progress ? (user.progress.completed_lessons || []) : [];
+
+      // 5. Ku shub stats-ka dhabta ah ee Supabase
+      document.getElementById('stat-xp').textContent = xp;
+      
+      // Haddii aad u baahantahay xisaabinta dhibco kale, waxaad si toos ah uga ogaan kartaa cashirada
+      const totalLessons = 36; 
+      const completedCount = completedList.length;
+      const percentage = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+      
+      document.getElementById('stat-listening').textContent = `${percentage}%`;
+
+    } catch (err) {
+      console.error("Dashboard-ka waa uu rori waayey:", err);
     }
   }
 
-  document.getElementById('logout-link').addEventListener('click', (e) => {
-    e.preventDefault();
-    window.LinguaAuth.logout();
-    window.location.href = '../index.html';
-  });
+  // Orod sii marka weebka la furo
+  document.addEventListener('DOMContentLoaded', loadDashboard);
 
-  const stats = window.LinguaProgress.stats(36, 12);
-  document.getElementById('stat-xp').textContent = stats.xp;
-  document.getElementById('stat-streak').textContent = stats.streak;
-  document.getElementById('stat-listening').textContent = stats.listeningPct + '%';
-  document.getElementById('stat-speaking').textContent = stats.speakingAvg + '%';
+  // LOGOUT (Ka bixid)
+  document.getElementById('logout-link').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await window.LinguaAuth.logout();
+  });
 </script>
 </body>
 </html>

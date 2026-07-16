@@ -8,6 +8,8 @@
 <title>Sign In / Sign Up — LinguaRise</title>
 
 <script src="../js/theme.js"></script>
+<!-- Supabase CDN waa inuu halkan ka muuqdaa ka hor auth.js -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,9 +43,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Dhexda toosan (vertical center) */
-    align-items: center;     /* Dhexda jiifa (horizontal center) */
-    text-align: center;      /* Qoraalka oo dhan dhexda keento */
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     padding: var(--space-12) var(--space-10);
     color: #ffffff;
     overflow: hidden;
@@ -162,7 +164,7 @@
     max-width: 400px;
   }
 
-  /* Mobile Logo (only visible when design side is hidden) */
+  /* Mobile Logo */
   .mobile-only-logo {
     display: none;
     align-items: center;
@@ -264,6 +266,10 @@
     font-size: var(--fs-sm);
     margin-bottom: var(--space-4);
     display: none;
+    background: rgba(239, 68, 68, 0.1);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--danger);
   }
 
   .auth-error.show {
@@ -295,11 +301,11 @@
   /* RESPONSIVE BREAKPOINTS */
   @media (max-width: 900px) {
     .auth-design-side {
-      display: none; /* Hide left panel on tablets and smaller screens */
+      display: none;
     }
     
     .mobile-only-logo {
-      display: flex; /* Show mobile-optimized logo */
+      display: flex;
     }
 
     .auth-form-side {
@@ -341,7 +347,7 @@
   <main class="auth-form-side">
     <div class="auth-form-wrap">
       
-      <!-- Mobile Logo (only visible when left side is hidden) -->
+      <!-- Mobile Logo -->
       <a href="../index.html" class="mobile-only-logo">
         <span class="mobile-logo-mark">LR</span>
         LinguaRise
@@ -364,7 +370,7 @@
             <label for="login-password">Password</label>
             <input type="password" id="login-password" required placeholder="••••••••">
           </div>
-          <button type="submit" class="btn btn-primary auth-submit">Log In</button>
+          <button type="submit" class="btn btn-primary auth-submit" id="login-btn">Log In</button>
         </form>
 
         <!-- SIGNUP FORM -->
@@ -380,9 +386,9 @@
           </div>
           <div class="field">
             <label for="signup-password">Password</label>
-            <input type="password" id="signup-password" required placeholder="••••••••" minlength="4">
+            <input type="password" id="signup-password" required placeholder="••••••••" minlength="6">
           </div>
-          <button type="submit" class="btn btn-primary auth-submit">Create Account</button>
+          <button type="submit" class="btn btn-primary auth-submit" id="signup-btn">Create Account</button>
         </form>
       </div>
 
@@ -400,6 +406,7 @@
   const tabs = document.querySelectorAll('.auth-tab');
   const forms = document.querySelectorAll('.auth-form');
 
+  // Maareynta badhamada tab-ka (Log In / Sign Up)
   tabs.forEach((tab) => {
     tab.addEventListener('click', () => {
       tabs.forEach((t) => t.classList.remove('active'));
@@ -409,45 +416,87 @@
     });
   });
 
+  // Meesha qofka loo gudbinayo marka uu galo
   function redirectAfterAuth() {
     const target = sessionStorage.getItem('linguarise-redirect');
     sessionStorage.removeItem('linguarise-redirect');
     window.location.href = target || 'dashboard.html';
   }
 
-  document.getElementById('login-form').addEventListener('submit', (e) => {
+  // LOGIN SUBMIT (AASYNCHRONOUS)
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const errorEl = document.getElementById('login-error');
-    const result = window.LinguaAuth.login(email, password);
-    if (result.ok) {
-      redirectAfterAuth();
-    } else {
-      errorEl.textContent = result.error;
+    const btn = document.getElementById('login-btn');
+    
+    errorEl.classList.remove('show');
+    btn.disabled = true;
+    btn.textContent = 'Logging in...';
+
+    try {
+      const result = await window.LinguaAuth.login(email, password);
+      if (result.ok) {
+        redirectAfterAuth();
+      } else {
+        errorEl.textContent = result.error;
+        errorEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Log In';
+      }
+    } catch (err) {
+      errorEl.textContent = 'Something went wrong. Please try again.';
       errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Log In';
     }
   });
 
-  document.getElementById('signup-form').addEventListener('submit', (e) => {
+  // SIGNUP SUBMIT (AASYNCHRONOUS)
+  document.getElementById('signup-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('signup-name').value;
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;
     const errorEl = document.getElementById('signup-error');
-    const result = window.LinguaAuth.signup(name, email, password);
-    if (result.ok) {
-      redirectAfterAuth();
-    } else {
-      errorEl.textContent = result.error;
+    const btn = document.getElementById('signup-btn');
+    
+    errorEl.classList.remove('show');
+    btn.disabled = true;
+    btn.textContent = 'Creating account...';
+
+    try {
+      const result = await window.LinguaAuth.signup(name, email, password);
+      if (result.ok) {
+        redirectAfterAuth();
+      } else {
+        errorEl.textContent = result.error;
+        errorEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    } catch (err) {
+      errorEl.textContent = 'Something went wrong. Please try again.';
       errorEl.classList.add('show');
+      btn.disabled = false;
+      btn.textContent = 'Create Account';
     }
   });
 
-  // If already logged in, skip straight to dashboard
-  if (window.LinguaAuth.isLoggedIn()) {
-    window.location.href = 'dashboard.html';
+  // Hubi haddii qofku awalba u furnaa inuu toos ugu gudbo dashboard-ka
+  async function checkExistingSession() {
+    try {
+      const loggedIn = await window.LinguaAuth.isLoggedIn();
+      if (loggedIn) {
+        window.location.href = 'dashboard.html';
+      }
+    } catch(e) {
+      console.log("No active session found.");
+    }
   }
+  
+  document.addEventListener('DOMContentLoaded', checkExistingSession);
 </script>
 </body>
 </html>

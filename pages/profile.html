@@ -7,6 +7,8 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563EB'/%3E%3Ctext x='50%25' y='65%25' font-family='sans-serif' font-weight='bold' font-size='50' fill='white' text-anchor='middle'%3ELR%3C/text%3E%3C/svg%3E">
 <title>My Profile — LinguaRise</title>
 
+<!-- Supabase CDN waa inuu halkan ugu horreeyaa si uu auth.js ula shaqeeyo -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/theme.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/auth-guard.js"></script>
@@ -149,8 +151,8 @@
   }
 
   /* ==========================================
-     KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
-     ========================================== */
+      KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
+      ========================================== */
   @media (max-width: 768px) {
     .app-shell {
       display: flex;
@@ -352,20 +354,25 @@
 
   const user = window.LinguaAuth.currentUser();
 
-  function renderAvatar(el, size) {
-    if (user.avatar) {
+  function renderAvatar(el) {
+    if (user && user.avatar) {
       el.style.backgroundImage = `url(${user.avatar})`;
       el.textContent = '';
-    } else {
+    } else if (user && user.name) {
+      el.style.backgroundImage = 'none';
       el.textContent = user.name.trim().split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+    } else {
+      el.textContent = '?';
     }
   }
 
   if (user) {
-    document.getElementById('profile-name').textContent = user.name;
-    document.getElementById('profile-email').textContent = user.email;
+    document.getElementById('profile-name').textContent = user.name || 'User';
+    document.getElementById('profile-email').textContent = user.email || '';
     document.getElementById('profile-level').textContent = user.level || 'A1';
-    document.getElementById('p-since').textContent = new Date(user.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    if (user.createdAt) {
+      document.getElementById('p-since').textContent = new Date(user.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
     renderAvatar(document.getElementById('profile-avatar'));
   }
 
@@ -377,18 +384,28 @@
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
-      window.LinguaAuth.updateUser({ avatar: reader.result });
-      renderAvatar(document.getElementById('profile-avatar'));
-      window.showToast?.('Sawirka waa la beddelay ✅');
+    reader.onload = async () => {
+      try {
+        await window.LinguaAuth.updateUser({ avatar: reader.result });
+        renderAvatar(document.getElementById('profile-avatar'));
+        if (window.showToast) window.showToast('Sawirka waa la beddelay ✅');
+      } catch (err) {
+        console.error("Avatar update failed:", err);
+      }
     };
     reader.readAsDataURL(file);
   });
 
-  document.getElementById('logout-link').addEventListener('click', (e) => {
+  // Logout oo asynchronous laga dhigay si uu u nadiifiyo session-ka daruuraha (Supabase Cloud)
+  document.getElementById('logout-link').addEventListener('click', async (e) => {
     e.preventDefault();
-    window.LinguaAuth.logout();
-    window.location.href = '../index.html';
+    try {
+      await window.LinguaAuth.logout();
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      window.location.href = '../index.html';
+    }
   });
 
   const stats = window.LinguaProgress.stats(36, 12);
