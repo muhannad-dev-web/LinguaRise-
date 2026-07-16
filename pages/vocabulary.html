@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Favicon SVG ah oo si toos ah u dhalinaya astaanta "LR" ee Header-kaaga -->
+<!-- Favicon SVG ah oo si toos ah u dhalinaya astaanta "LR" ee Header-kaaga -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563EB'/%3E%3Ctext x='50%25' y='65%25' font-family='sans-serif' font-weight='bold' font-size='50' fill='white' text-anchor='middle'%3ELR%3C/text%3E%3C/svg%3E">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,6 +57,11 @@
     border-radius: var(--radius-full);
   }
 
+  /* Badhanka mobilka desktop-ka waa inuu ku qarsoonaadaa */
+  button.sidebar-toggle-mobile {
+    display: none !important;
+  }
+
   /* ==========================================
      KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
      ========================================== */
@@ -66,6 +71,30 @@
       flex-direction: column;
     }
 
+    /* QASAB INUU SOO MUUQDO MENU ICON-KA */
+    button.sidebar-toggle-mobile {
+      display: flex !important; 
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1) !important; 
+      border: none !important;
+      outline: none !important;
+      cursor: pointer !important;
+      padding: 8px !important;
+      border-radius: 8px !important;
+      width: 40px !important;
+      height: 40px !important;
+      z-index: 1000 !important;
+    }
+
+    /* Hubi midabka SVG-ga inuu cad yahay */
+    button.sidebar-toggle-mobile svg {
+      width: 24px !important;
+      height: 24px !important;
+      stroke: #ffffff !important; 
+      display: block !important;
+    }
+
     /* In sidebar-ka la qariyo marka hore */
     .app-sidebar {
       position: fixed;
@@ -73,8 +102,8 @@
       top: 0;
       width: 260px;
       background: var(--bg-surface, #111827);
-      z-index: 999;
-      transition: left 0.3s ease;
+      z-index: 9999; 
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
     }
 
@@ -85,7 +114,7 @@
 
     /* Hagaajinta Topbar-ka iyo Main-ka ee mobilada */
     .app-topbar {
-      padding: var(--space-4);
+      padding: var(--space-4) !important;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -156,12 +185,14 @@
 
   <!-- ============ MAIN CONTENT AREA ============ -->
   <div class="app-content-wrapper">
-    <header class="app-topbar">
-      <div style="display:flex; align-items:center; gap:12px;">
+    <header class="app-topbar" style="padding-left: var(--space-4); padding-right: var(--space-4);">
+      <div style="display:flex; align-items:center; gap:16px;">
         <button class="sidebar-toggle-mobile" id="mobileMenuBtn" aria-label="Menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
         </button>
-        <h1>Vocabulary Builder</h1>
+        <h1 style="font-size: var(--fs-xl); font-family: 'Space Grotesk', sans-serif;">Vocabulary Builder</h1>
       </div>
 
       <button class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
@@ -171,7 +202,7 @@
       </button>
     </header>
 
-    <main class="app-main">
+    <main class="app-main" style="padding: var(--space-6);">
       <p style="color:var(--text-muted); margin-bottom: var(--space-6);">36 themed word sets across 3 levels. Study the words, then pass the quiz with 70% or higher to unlock the next lesson.</p>
 
       <div class="cert-slot"></div>
