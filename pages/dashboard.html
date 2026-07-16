@@ -203,15 +203,13 @@
     line-height: 1.5;
   }
 
-  /* Hamburger Menu default-ka (Desktop-ka waa inuu ku qariyo) */
-  .sidebar-toggle-mobile {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--text-main);
-    cursor: pointer;
-    padding: 6px;
-    border-radius: var(--radius-sm);
+  /* ==================================================
+     HAMBURGER MENU FIX & MOBILE COMPACT SPACING
+     ================================================== */
+  
+  /* Badhanka mobilka marka hore desktop-ka waa inuu ku qarsoonaadaa */
+  button.sidebar-toggle-mobile {
+    display: none !important;
   }
 
   /* ==========================================
@@ -223,17 +221,33 @@
       flex-direction: column;
     }
 
-    /* Dib u soo celinta Menu Icon-ka mobilada dushiisa */
-    .sidebar-toggle-mobile {
-      display: flex !important;
+    /* QASAB INUU SOO MUUQDO MENU ICON-KA */
+    button.sidebar-toggle-mobile {
+      display: flex !important; /* Waxay ka adkaanaysaa CSS kasta oo dibada ah */
       align-items: center;
       justify-content: center;
+      background: rgba(255, 255, 255, 0.1) !important; /* Waxay siineysaa goobo ifaysa oo ka dhex muuqata madowga */
+      border: none !important;
+      outline: none !important;
+      cursor: pointer !important;
+      padding: 8px !important;
+      border-radius: 8px !important;
+      width: 40px !important;
+      height: 40px !important;
+      z-index: 1000 !important;
     }
 
-    .sidebar-toggle-mobile svg {
-      width: 26px;
-      height: 26px;
-      stroke: var(--text-main) !important;
+    /* Hubi midabka SVG-ga inuu cad yahay */
+    button.sidebar-toggle-mobile svg {
+      width: 24px !important;
+      height: 24px !important;
+      stroke: #ffffff !important; /* Midab cad oo qasab ah */
+      display: block !important;
+    }
+
+    /* In bogga uu yeesho padding (banaan) si aaney wax u dhegin geesaha */
+    .app-main {
+      padding: var(--space-4) !important;
     }
 
     /* In sidebar-ka la qariyo marka hore */
@@ -243,7 +257,7 @@
       top: 0;
       width: 260px;
       background: var(--bg-surface, #111827);
-      z-index: 999;
+      z-index: 9999; /* Aad u sareeya si uu wax kasta uga sareeyo */
       transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
     }
@@ -253,10 +267,11 @@
       left: 0;
     }
 
-    /* Kaadhadhka stats-ka si ay labo labo u noqdaan mobilka */
+    /* Kaadhadhka stats-ka si ay labo labo u noqdaan mobilka laakiin geesaha ka fogaadaan */
     .stat-grid {
       grid-template-columns: repeat(2, 1fr) !important;
       gap: var(--space-3) !important;
+      justify-content: flex-start !important; /* Iney dhinaca bidix u dhacaan halkii ay dhexda imaan lahaayeen */
     }
 
     /* Kaadhadhka waaweyn ee waxbarashada si ay saf u galaan */
@@ -335,10 +350,12 @@
 
   <!-- ============ MAIN ============ -->
   <div class="app-content-wrapper">
-    <header class="app-topbar">
-      <div style="display:flex; align-items:center; gap:12px;">
+    <header class="app-topbar" style="padding-left: var(--space-4); padding-right: var(--space-4);">
+      <div style="display:flex; align-items:center; gap:16px;">
         <button class="sidebar-toggle-mobile" id="mobileMenuBtn" aria-label="Menu">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
         </button>
         <h1 style="font-size: var(--fs-xl); font-family: 'Space Grotesk', sans-serif;">Dashboard</h1>
       </div>
@@ -353,7 +370,7 @@
       </div>
     </header>
 
-    <main class="app-main">
+    <main class="app-main" style="padding: var(--space-6);">
       <!-- Welcome Banner oo casri ah -->
       <div class="welcome-banner">
         <h2 id="welcome-heading" style="font-size: var(--fs-2xl); font-family: 'Space Grotesk', sans-serif; font-weight: 700;">Welcome back!</h2>
@@ -377,7 +394,7 @@
           <div class="stat-label">Listening Pct.</div>
         </div>
         <div class="card stat-card">
-          <div class="stat-icon" style="background: rgba(245, 158, 11L, 0.1); color: #f59e0b;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/></svg></div>
+          <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/></svg></div>
           <div class="stat-value" id="stat-speaking">0%</div>
           <div class="stat-label">Speaking Avg.</div>
         </div>
