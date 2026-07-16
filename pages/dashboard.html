@@ -49,12 +49,191 @@
   }
 
   /* ==========================================
+     DASHBOARD ENHANCEMENTS & LOOK (QURXINTA)
+     ========================================== */
+  .app-content-wrapper {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dashboard Welcome Section */
+  .welcome-banner {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    color: #ffffff;
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-6);
+    box-shadow: 0 4px 20px rgba(37, 99, 235, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-banner::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .welcome-banner p {
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: var(--space-1);
+  }
+
+  /* Stats Cards Grid Improvement */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .stat-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: var(--space-5);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+    border-color: var(--brand-primary, #2563eb);
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--brand-primary, #2563eb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .stat-value {
+    font-size: var(--fs-3xl);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    color: var(--text-main);
+  }
+
+  .stat-label {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Learning Modules Cards */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-4);
+  }
+
+  .why-card {
+    text-decoration: none;
+    color: inherit;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: var(--space-5);
+    border-radius: var(--radius-md);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .why-card:hover {
+    border-color: var(--brand-primary, #2563eb);
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .why-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--bg-body);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand-primary, #2563eb);
+    border: 1px solid var(--border-color);
+    transition: background 0.2s;
+  }
+
+  .why-card:hover .why-icon {
+    background: var(--brand-primary, #2563eb);
+    color: #ffffff;
+  }
+
+  .why-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .why-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: var(--fs-lg);
+    font-weight: 600;
+  }
+
+  .why-card p {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* Hamburger Menu default-ka (Desktop-ka waa inuu ku qariyo) */
+  .sidebar-toggle-mobile {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* ==========================================
      KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
      ========================================== */
   @media (max-width: 768px) {
     .app-shell {
       display: flex;
       flex-direction: column;
+    }
+
+    /* Dib u soo celinta Menu Icon-ka mobilada dushiisa */
+    .sidebar-toggle-mobile {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sidebar-toggle-mobile svg {
+      width: 26px;
+      height: 26px;
+      stroke: var(--text-main) !important;
     }
 
     /* In sidebar-ka la qariyo marka hore */
@@ -65,7 +244,7 @@
       width: 260px;
       background: var(--bg-surface, #111827);
       z-index: 999;
-      transition: left 0.3s ease;
+      transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
     }
 
@@ -74,7 +253,7 @@
       left: 0;
     }
 
-    /* Kaadhadhka stats-ka si ay labo labo u noqdaan */
+    /* Kaadhadhka stats-ka si ay labo labo u noqdaan mobilka */
     .stat-grid {
       grid-template-columns: repeat(2, 1fr) !important;
       gap: var(--space-3) !important;
@@ -155,13 +334,13 @@
   </aside>
 
   <!-- ============ MAIN ============ -->
-  <div style="flex: 1; min-width: 0;">
+  <div class="app-content-wrapper">
     <header class="app-topbar">
       <div style="display:flex; align-items:center; gap:12px;">
         <button class="sidebar-toggle-mobile" id="mobileMenuBtn" aria-label="Menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <h1>Dashboard</h1>
+        <h1 style="font-size: var(--fs-xl); font-family: 'Space Grotesk', sans-serif;">Dashboard</h1>
       </div>
 
       <div class="nav-actions">
@@ -170,14 +349,15 @@
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-7.54-7.54A9 9 0 0 0 12 3z"/></svg>
           </span>
         </button>
-        <a href="profile.html" id="topbar-avatar" class="testimonial-avatar" style="width:38px;height:38px; background-size:cover; background-position:center; display: flex; align-items: center; justify-content: center;">?</a>
+        <a href="profile.html" id="topbar-avatar" class="testimonial-avatar" style="width:38px;height:38px; background-size:cover; background-position:center; display: flex; align-items: center; justify-content: center; font-weight: 600; border-radius: 50%; border: 2px solid var(--brand-primary);">?</a>
       </div>
     </header>
 
     <main class="app-main">
-      <div class="section-head" style="margin-bottom: var(--space-6);">
-        <h2 id="welcome-heading" style="font-size: var(--fs-2xl);">Welcome back!</h2>
-        <p>Here's where you left off.</p>
+      <!-- Welcome Banner oo casri ah -->
+      <div class="welcome-banner">
+        <h2 id="welcome-heading" style="font-size: var(--fs-2xl); font-family: 'Space Grotesk', sans-serif; font-weight: 700;">Welcome back!</h2>
+        <p>Ready to level up your English skills today? Here's your overall learning progress.</p>
       </div>
 
       <div class="stat-grid">
@@ -187,52 +367,52 @@
           <div class="stat-label">Total XP</div>
         </div>
         <div class="card stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/></svg></div>
+          <div class="stat-icon" style="background: rgba(239, 68, 68, 0.1); color: #ef4444;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c3 3 4 6 4 9a4 4 0 0 1-8 0c0-3 1-6 4-9z"/></svg></div>
           <div class="stat-value" id="stat-streak">1</div>
           <div class="stat-label">Day Streak</div>
         </div>
         <div class="card stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg></div>
+          <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg></div>
           <div class="stat-value" id="stat-listening">0%</div>
-          <div class="stat-label">Listening Progress</div>
+          <div class="stat-label">Listening Pct.</div>
         </div>
         <div class="card stat-card">
-          <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/></svg></div>
+          <div class="stat-icon" style="background: rgba(245, 158, 11L, 0.1); color: #f59e0b;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/></svg></div>
           <div class="stat-value" id="stat-speaking">0%</div>
           <div class="stat-label">Speaking Avg.</div>
         </div>
       </div>
 
-      <div class="section-head" style="margin-bottom: var(--space-6);">
-        <h2 style="font-size: var(--fs-2xl);">Continue learning</h2>
-        <p>Pick up where you left off.</p>
+      <div class="section-head" style="margin-bottom: var(--space-4);">
+        <h2 style="font-size: var(--fs-xl); font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--text-main);">Continue Learning</h2>
+        <p style="color: var(--text-muted); font-size: var(--fs-sm);">Select a skills module below to practice.</p>
       </div>
 
       <div class="why-grid">
-        <a href="listening.html" class="why-card card">
+        <a href="listening.html" class="why-card">
           <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg></div>
-          <h3>Listening</h3>
-          <p>36 lessons across 3 levels — practice your ear.</p>
+          <h3>Listening Module</h3>
+          <p>36 audio lessons across 3 graded difficulty levels to sharp your ear.</p>
         </a>
-        <a href="speaking.html" class="why-card card">
+        <a href="speaking.html" class="why-card">
           <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a4 4 0 0 0 4-4V6a4 4 0 0 0-8 0v5a4 4 0 0 0 4 4z"/><path d="M19 11a7 7 0 0 1-14 0"/></svg></div>
-          <h3>Speaking</h3>
-          <p>Practice pronunciation with instant voice feedback.</p>
+          <h3>Speaking Practice</h3>
+          <p>Practice voice and pronunciation training with automated scoring feedback.</p>
         </a>
-        <a href="reading.html" class="why-card card">
+        <a href="reading.html" class="why-card">
           <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
-          <h3>Reading</h3>
-          <p>36 passages, 3 levels — quiz required to advance.</p>
+          <h3>Reading Passages</h3>
+          <p>36 interactive textbook passages built with comprehension unlock quizzes.</p>
         </a>
-        <a href="vocabulary.html" class="why-card card">
+        <a href="vocabulary.html" class="why-card">
           <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg></div>
-          <h3>Vocabulary</h3>
-          <p>36 word sets, 3 levels — quiz required to advance.</p>
+          <h3>Vocabulary Builder</h3>
+          <p>Master professional and contextual themed terms across multiple levels.</p>
         </a>
-        <a href="grammar.html" class="why-card card">
+        <a href="grammar.html" class="why-card">
           <div class="why-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h4M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M9 3v18M9 8h.01M9 13h.01"/></svg></div>
-          <h3>Grammar</h3>
-          <p>36 grammar lessons, 3 levels — quiz required to advance.</p>
+          <h3>Grammar Guide</h3>
+          <p>Understand complex syntax structures with focused examples and dynamic testing.</p>
         </a>
       </div>
     </main>
