@@ -498,4 +498,21 @@
   .hero-stats { gap: var(--space-6); }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .cta-banner { padding: var(--space-8) var(--space-4); }
+
+  /* 
+     KOBEYNTA MENU-GA MOBILKA (BADHANKA PROFILE):
+     Tani waxay xallineysaa badhanka "My Profile (Muhannad)" marka uu 
+     shaashadda taleefanka dhanka bidix kaga bixi rabo.
+  */
+  .mobile-menu .btn {
+    display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+    white-space: normal !important;   /* Qoraalka hadduu dheeraado wuu jabi doonaa */
+    word-wrap: break-word !important; /* Hadduu magacu aad u weyn yahay hoos ayuu u dhacayaa */
+    padding: 12px 16px !important;    /* Padding habboon oo aan isku dhuujineyn badhanka */
+    font-size: 1rem !important;
+  }
 }
