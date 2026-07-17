@@ -201,7 +201,7 @@
         <h1 style="font-size: var(--fs-xl); font-family: 'Space Grotesk', sans-serif;">Reading Practice</h1>
       </div>
 
-      <button class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
+      <button class="theme-toggle" id="localThemeToggle" aria-label="Toggle dark mode" aria-pressed="false">
         <span class="knob">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-7.54-7.54A9 9 0 0 0 12 3z"/></svg>
         </span>
@@ -225,27 +225,62 @@
 <script src="../js/quiz-engine.js"></script>
 <script src="../js/reading-data.js"></script>
 <script>
-  // 1. DAARE / MENU TOGGLE (MOBILES) - Waxaa la dhigi karaa isla markiiba si ay u shaqeyso iyada oo aan la sugin inta wax walba raranayaan
+  // ==========================================
+  // 1. MOBILE MENU SYSTEM (KA HORTAGISTA CLICKS MULTIPLE)
+  // ==========================================
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const appSidebar = document.getElementById('appSidebar');
 
   if (mobileMenuBtn && appSidebar) {
-    mobileMenuBtn.addEventListener('click', (e) => {
+    // Ka hortag click-yada badan adoo isticmaalaya dhacdo nadiif ah
+    mobileMenuBtn.onclick = (e) => {
       e.stopPropagation();
       appSidebar.classList.toggle('active');
-    });
+    };
 
-    document.addEventListener('click', (e) => {
+    document.onclick = (e) => {
       if (appSidebar.classList.contains('active') && !appSidebar.contains(e.target) && e.target !== mobileMenuBtn) {
         appSidebar.classList.remove('active');
       }
-    });
+    };
   }
 
-  // 2. LOGOUT EVENT LISTENER
+  // ==========================================
+  // 2. DARK MODE / THEME SYSTEM (BUUXA OO TOOS AH)
+  // ==========================================
+  const themeToggle = document.getElementById('localThemeToggle');
+  
+  function updateThemeUI(isDark) {
+    if (isDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeToggle.setAttribute('aria-pressed', 'true');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+      themeToggle.setAttribute('aria-pressed', 'false');
+    }
+  }
+
+  // Bilowga hore ee mawduuca (Theme Initialization)
+  const savedTheme = localStorage.getItem('theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let isDarkMode = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+  updateThemeUI(isDarkMode);
+
+  if (themeToggle) {
+    themeToggle.onclick = (e) => {
+      e.preventDefault();
+      isDarkMode = !isDarkMode;
+      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+      updateThemeUI(isDarkMode);
+    };
+  }
+
+  // ==========================================
+  // 3. LOGOUT EVENT LISTENER
+  // ==========================================
   const logoutLink = document.getElementById('logout-link');
   if (logoutLink) {
-    logoutLink.addEventListener('click', async (e) => {
+    logoutLink.onclick = async (e) => {
       e.preventDefault();
       try {
         if (window.LinguaAuth && typeof window.LinguaAuth.logout === 'function') {
@@ -256,35 +291,32 @@
       } finally {
         window.location.href = '../index.html';
       }
-    });
+    };
   }
 
-  // 🚀 BILOWGA NIDAAMKA READ PRACTICE (NIDAMKA AMMAANKA AH EE ADAG)
+  // ==========================================
+  // 🚀 BILOWGA NIDAAMKA READ PRACTICE (USER-SPECIFIC ENGINE)
+  // ==========================================
   async function initReadingLessons() {
     try {
-      // Hubi in LinguaAuth uu diyaar yahay
       if (!window.LinguaAuth || typeof window.LinguaAuth.currentUser !== 'function') {
         console.warn("LinguaAuth system is still loading, retrying...");
-        setTimeout(initReadingLessons, 100); // Isku day mar kale 100ms ka dib
+        setTimeout(initReadingLessons, 100);
         return;
       }
 
-      // 1. Sug xogta isticmaalaha hadda galay (Supabase Session)
       const user = await window.LinguaAuth.currentUser();
       if (!user) {
-        // Haddaanu user jirin, u dhiib bogga hore ee log-in
         window.location.href = '../index.html';
         return;
       }
 
-      // 2. Isku xir kaydka progress-ka iyo aqoonsiga gaarka ah ee user-ka (user.id)
       if (window.LinguaProgress && typeof window.LinguaProgress.initUser === 'function') {
         window.LinguaProgress.initUser(user.id);
       } else {
         console.warn("LinguaProgress was not initialized properly!");
       }
 
-      // 3. Hadda rux mishiinka su'aalaha casharka adoo isticmaalaya progress-ka saxda ah
       if (typeof initLessonQuizEngine === 'function') {
         initLessonQuizEngine('reading', READING_LEVELS);
       } else {
@@ -295,11 +327,10 @@
     }
   }
 
-  // Nidaamka "State-Check" ee ka hortagaya ruxitaanka fadhiidnimada ah (Race Condition)
+  // Hubi rarka bogga (Race Condition Safeguard)
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initReadingLessons);
   } else {
-    // Haddii boggu mar hore diyaar ahaa, toos u kici shaqada
     initReadingLessons();
   }
 </script>
