@@ -1,9 +1,13 @@
 /* ============================================
    MAIN — navbar, mobile menu, reveal, FAQ, counters,
-   level bars, back-to-top, toast helper
+   level bars, back-to-top, toast helper & Auth-Loaders
    ============================================ */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+
+  // ========================================================
+  // ⚡ 1. DHAMMAAN INTERACTIVE UI (ISLA MARTIBA WAY SHAQAYNAYAAN)
+  // ========================================================
 
   /* ---------- Navbar scroll state ---------- */
   const navbar = document.querySelector('.navbar');
@@ -93,21 +97,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const question = item.querySelector('.faq-question');
     const answer = item.querySelector('.faq-answer');
 
-    question.addEventListener('click', () => {
-      const isOpen = item.classList.contains('is-open');
+    if (question && answer) {
+      question.addEventListener('click', () => {
+        const isOpen = item.classList.contains('is-open');
 
-      document.querySelectorAll('.faq-item').forEach((other) => {
-        other.classList.remove('is-open');
-        other.querySelector('.faq-answer').style.maxHeight = null;
-        other.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+        document.querySelectorAll('.faq-item').forEach((other) => {
+          const otherAnswer = other.querySelector('.faq-answer');
+          const otherQuestion = other.querySelector('.faq-question');
+          
+          other.classList.remove('is-open');
+          if (otherAnswer) otherAnswer.style.maxHeight = null;
+          if (otherQuestion) otherQuestion.setAttribute('aria-expanded', 'false');
+        });
+
+        if (!isOpen) {
+          item.classList.add('is-open');
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+          question.setAttribute('aria-expanded', 'true');
+        }
       });
-
-      if (!isOpen) {
-        item.classList.add('is-open');
-        answer.style.maxHeight = answer.scrollHeight + 'px';
-        question.setAttribute('aria-expanded', 'true');
-      }
-    });
+    }
   });
 
   /* ---------- Toast helper (global) ---------- */
@@ -125,24 +134,55 @@ document.addEventListener('DOMContentLoaded', () => {
     toast._timer = setTimeout(() => toast.classList.remove('is-visible'), duration);
   };
 
-  /* ---------- Newsletter form (demo) ---------- */
+  /* ---------- Newsletter form ---------- */
   const newsletterForm = document.querySelector('.newsletter-form');
   newsletterForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     const input = newsletterForm.querySelector('input');
-    if (input.value.trim()) {
+    if (input && input.value.trim()) {
       window.showToast('Waad ku mahadsan tahay diiwaan gelinta! ✅');
       input.value = '';
     }
   });
 
-  /* ---------- CTA buttons: route to dashboard if logged in, else to signup ---------- */
+  /* ---------- CTA/Start Learning buttons ---------- */
   document.querySelectorAll('[data-action="start-learning"]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const isDashboard = window.location.pathname.includes('/pages/');
       const base = isDashboard ? '' : 'pages/';
-      const loggedIn = window.LinguaAuth?.isLoggedIn();
+      const loggedIn = window.LinguaAuth?.isLoggedIn && window.LinguaAuth.isLoggedIn();
       window.location.href = loggedIn ? `${base}dashboard.html` : `${base}login.html`;
     });
   });
+
+
+  // ========================================================
+  // 👤 2. GLOBAL AUTH & USER SESSION (AVATAR & PROGRESS)
+  // ========================================================
+  try {
+    if (window.LinguaAuth && typeof window.LinguaAuth.currentUser === 'function') {
+      const user = await window.LinguaAuth.currentUser();
+      if (user) {
+        // Deji Avatar-ka yar ee geeska sare ee Topbar-ka
+        const avatarEl = document.getElementById('topbar-avatar');
+        if (avatarEl) {
+          if (user.avatar) {
+            avatarEl.style.backgroundImage = `url(${user.avatar})`;
+            avatarEl.textContent = '';
+          } else if (user.name) {
+            avatarEl.textContent = user.name.trim().split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+          }
+        }
+
+        // Kici Progress Store-ka isticmaalaha
+        const userId = user.id ? String(user.id).trim() : null;
+        if (userId && window.LinguaProgress && typeof window.LinguaProgress.initUser === 'function') {
+          window.LinguaProgress.initUser(userId);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Cillad ka dhalatay soo roridda macluumaadka isticmaalaha:", error);
+  }
+
 });
