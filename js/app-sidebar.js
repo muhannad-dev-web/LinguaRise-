@@ -4,9 +4,11 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const sidebar = document.querySelector('.app-sidebar');
-  const toggleBtn = document.querySelector('.sidebar-toggle-mobile');
-  let backdrop = document.querySelector('.backdrop-blur-layer');
+  
+  // Waxaan hubinaynaa in sidebar-ku jiro ka hor inta aynaan wax kale samayn
+  if (!sidebar) return; 
 
+  let backdrop = document.querySelector('.backdrop-blur-layer');
   if (!backdrop) {
     backdrop = document.createElement('div');
     backdrop.className = 'backdrop-blur-layer';
@@ -25,13 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.overflow = '';
   }
 
-  toggleBtn?.addEventListener('click', () => {
-    sidebar.classList.contains('is-open') ? closeSidebar() : openSidebar();
+  // Isticmaalida Event Delegation si aan u helno badhanka xitaa haddii uu dambeeyo
+  document.addEventListener('click', (e) => {
+    const toggleBtn = e.target.closest('.sidebar-toggle-mobile');
+    
+    if (toggleBtn) {
+      e.preventDefault();
+      sidebar.classList.contains('is-open') ? closeSidebar() : openSidebar();
+    }
   });
 
   backdrop.addEventListener('click', closeSidebar);
 
-  sidebar?.querySelectorAll('a').forEach((link) => {
+  sidebar.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', () => {
       if (window.innerWidth <= 900) closeSidebar();
     });

@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Favicon SVG ah oo si toos ah u dhalinaya astaanta "LR" ee Header-kaaga -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563EB'/%3E%3Ctext x='50%25' y='65%25' font-family='sans-serif' font-weight='bold' font-size='50' fill='white' text-anchor='middle'%3ELR%3C/text%3E%3C/svg%3E">
 <title>Reading Practice — LinguaRise</title>
 
-<!-- Supabase CDN waa inuu halkan ugu horreeyaa si uu auth.js ula shaqeeyo -->
+<!-- Supabase CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/theme.js"></script>
 <script src="../js/auth.js"></script>
@@ -23,7 +22,6 @@
 <link rel="stylesheet" href="../css/app-layout.css">
 
 <style>
-  /* CSS-kan wuxuu xallinayaa cilladda responsive-ka ee desktop, tablet iyo mobile */
   .app-content-wrapper {
     flex: 1;
     min-width: 0; 
@@ -32,7 +30,6 @@
     width: 100%;
   }
 
-  /* Styling-ka Sidebar Scrolling-ka u oggolaanaya */
   .app-sidebar {
     display: flex;
     flex-direction: column;
@@ -43,11 +40,10 @@
 
   .sidebar-nav {
     flex: 1;
-    overflow-y: auto; /* Waxay oggolaanaysaa in menu-yada la dhex scroll-gareeyo */
+    overflow-y: auto;
     padding-right: var(--space-2);
   }
 
-  /* Naqshadaynta quruxda badan ee Scrollbar-ka sidebar-ka dhexdiisa ah */
   .sidebar-nav::-webkit-scrollbar {
     width: 4px;
   }
@@ -59,21 +55,16 @@
     border-radius: var(--radius-full);
   }
 
-  /* Badhanka mobilka desktop-ka waa inuu ku qarsoonaadaa */
   button.sidebar-toggle-mobile {
     display: none !important;
   }
 
-  /* ==========================================
-      KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
-      ========================================== */
-  @media (max-width: 768px) {
+  @media (max-width: 900px) {
     .app-shell {
       display: flex;
       flex-direction: column;
     }
 
-    /* QASAB INUU SOO MUUQDO MENU ICON-KA */
     button.sidebar-toggle-mobile {
       display: flex !important; 
       align-items: center;
@@ -89,7 +80,6 @@
       z-index: 10000 !important;
     }
 
-    /* Hubi midabka SVG-ga inuu cad yahay */
     button.sidebar-toggle-mobile svg {
       width: 24px !important;
       height: 24px !important;
@@ -97,7 +87,7 @@
       display: block !important;
     }
 
-    /* In sidebar-ka la qariyo marka hore */
+    /* Isku dhoweynta class-ka 'is-open' ee uu isticmaalayo app-sidebar.js */
     .app-sidebar {
       position: fixed;
       left: -280px;
@@ -109,12 +99,10 @@
       box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
     }
 
-    /* Marka la furo (active) */
-    .app-sidebar.active {
+    .app-sidebar.is-open {
       left: 0 !important;
     }
 
-    /* Hagaajinta Topbar-ka iyo Main-ka ee mobilada */
     .app-topbar {
       padding: var(--space-4) !important;
       display: flex;
@@ -193,6 +181,7 @@
   <div class="app-content-wrapper">
     <header class="app-topbar" style="padding-left: var(--space-4); padding-right: var(--space-4);">
       <div style="display:flex; align-items:center; gap:16px;">
+        <!-- Badhankan wuxuu hadda si toos ah u kicinayaa function-ka ku dhex jira app-sidebar.js -->
         <button class="sidebar-toggle-mobile" id="mobileMenuBtn" aria-label="Menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <path d="M4 6h16M4 12h16M4 18h16"/>
@@ -222,7 +211,7 @@
 </div>
 
 <!-- =======================================================
-     JS FILES-KA HOOSE (Nidaamsan oo badbaado leh)
+     JS FILES-KA HOOSE
      ======================================================= -->
 <script src="../js/progress-store.js"></script>
 <script src="../js/reading-data.js"></script>
@@ -233,29 +222,9 @@
 
 <script>
   // =========================================================================
-  // ⚡ 1. GLOBAL UI (NAVBAR, SCROLL, SIDEBAR & DARK MODE)
-  // Qaybtaan waxay shaqaynaysaa isla markiiba si gooni ah oo ka madax-bannaan Supabase.
+  // ⚡ 1. GLOBAL LOCAL THEME TOGGLE (DARK MODE)
   // =========================================================================
-  (function initGlobalUI() {
-    // Mobile Menu Toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const appSidebar = document.getElementById('appSidebar');
-
-    if (mobileMenuBtn && appSidebar) {
-      mobileMenuBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        appSidebar.classList.toggle('active');
-      });
-
-      // Marka meel ka baxsan sidebar-ka la riixo inuu xirmo
-      document.addEventListener('click', (e) => {
-        if (appSidebar.classList.contains('active') && !appSidebar.contains(e.target) && e.target !== mobileMenuBtn) {
-          appSidebar.classList.remove('active');
-        }
-      });
-    }
-
-    // Local Dark Mode Toggle selector
+  (function initThemeUI() {
     const btnTheme = document.getElementById('localThemeToggle');
     if (btnTheme) {
       btnTheme.onclick = (e) => {
@@ -276,29 +245,23 @@
     }
   })();
 
-
   // =========================================================================
-  // 🔐 2. HUBINTA SUPABASE & RORIDDA CASHARRADA (SIDA UGU FUDUD EE UI-GA LOO BADBAADIYO)
-  // Waxay hubineysaa aqoonsiga isticmaalaha iyo casharradiisa gaarka ah asynchronouse-ly.
+  // 🔐 2. HUBINTA SUPABASE SESSION & RORIDDA CASHARRADA
   // =========================================================================
   async function checkUserSession() {
     try {
-      // Hubi in nidaamka Auth uu dhashay ka hor intaan la kicin
       if (!window.LinguaAuth || typeof window.LinguaAuth.currentUser !== 'function') {
-        console.warn("Nidaamka LinguaAuth wali ma diyaarsana, dib u isku day 300ms kadib.");
-        setTimeout(checkUserSession, 300);
+        setTimeout(checkUserSession, 150);
         return;
       }
 
-      // Xaqiiji isticmaalaha hadda soo galay
       const user = await window.LinguaAuth.currentUser();
       if (!user) {
-        console.log("Ma jiro isticmaale firfircoon, dib loogu celinayo boggii hore.");
         window.location.href = '../index.html';
         return;
       }
 
-      // Deji Avatar-ka geeska sare ee Header-ka ku yaal
+      // Set Avatar
       const avatarEl = document.getElementById('topbar-avatar');
       if (avatarEl) {
         if (user.avatar) {
@@ -309,25 +272,29 @@
         }
       }
 
-      // 🛡️ Ka saar isku dhex yaaca: Ku xidh horumarka (Progress-ka) kaliya ID-ga isticmaalaha hadda galay
+      // 🛡️ User Progress-Store Syncing (Xallinta Isku-dhaca Storage-ka)
       const userId = user.id ? String(user.id).trim() : null;
-      if (userId && window.LinguaProgress && typeof window.LinguaProgress.initUser === 'function') {
+      if (userId && window.LinguaProgress) {
+        // Ku kaydi Progress-ka ID-ga gaarka ah ee isticmaalaha si uusan qof kale u dhexgalin
+        const originalLoad = window.LinguaProgress.get;
+        window.LinguaProgress.initUser = function(id) {
+          this.userKey = `linguarise-progress-${id}`;
+        };
         window.LinguaProgress.initUser(userId);
       }
 
-      // 🎯 KICI CAYAARTA QAAB "GADAAL AH" (ASYNC CHUNKING TO PREVENT FREEZE)
+      // 🎯 Roridda "Asynchronous" ah si loo badbaadiyo UI-ga iyo Scroll-ka
       if (typeof initLessonQuizEngine === 'function' && typeof READING_LEVELS !== 'undefined') {
         
-        // requestAnimationFrame iyo setTimeout waxay daryeelayaan in Scroll-ku had iyo jeer shaqeeyo
         requestAnimationFrame(() => {
           setTimeout(() => {
             try {
               initLessonQuizEngine('reading', READING_LEVELS);
-              console.log("Quiz Engine-ka waa la roray iyadoo la ilaalinayo scroll-ka!");
+              console.log("Quiz Engine-ka waa la roray si badbaado leh!");
             } catch (renderError) {
-              console.error("Cillad ayaa ka dhacday gudaha initLessonQuizEngine:", renderError);
+              console.error("Cillad dhalinta casharka:", renderError);
             }
-          }, 50); // Sugitaan yar oo 50ms ah si browser-ku u neefsado
+          }, 40); 
         });
 
       } else {
@@ -340,10 +307,9 @@
     }
   }
 
-  // Kici hubinta amniga marka uu DOM-ku dhasho
   document.addEventListener('DOMContentLoaded', checkUserSession);
 
-  // Logout function — Asynchronous si uu u tirtiro session-ka Supabase
+  // Logout Action
   const logoutBtn = document.getElementById('logout-link');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async (e) => {
