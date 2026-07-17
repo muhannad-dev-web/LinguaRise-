@@ -225,7 +225,7 @@
 <script src="../js/quiz-engine.js"></script>
 <script src="../js/reading-data.js"></script>
 <script>
-  // Script-ka furaya/xiraya Menu-ga marka mobilka la joogo
+  // 1. DAARE / MENU TOGGLE (MOBILES) - Waxaa la dhigi karaa isla markiiba si ay u shaqeyso iyada oo aan la sugin inta wax walba raranayaan
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const appSidebar = document.getElementById('appSidebar');
 
@@ -235,7 +235,6 @@
       appSidebar.classList.toggle('active');
     });
 
-    // Marka meel ka baxsan sidebar-ka la riixo inuu xirmo
     document.addEventListener('click', (e) => {
       if (appSidebar.classList.contains('active') && !appSidebar.contains(e.target) && e.target !== mobileMenuBtn) {
         appSidebar.classList.remove('active');
@@ -243,13 +242,37 @@
     });
   }
 
-  // 🚀 BILOWGA NIDAAMKA READ PRACTICE (USER-SPECIFIC LESSON ENGINE)
+  // 2. LOGOUT EVENT LISTENER
+  const logoutLink = document.getElementById('logout-link');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        if (window.LinguaAuth && typeof window.LinguaAuth.logout === 'function') {
+          await window.LinguaAuth.logout();
+        }
+      } catch (err) {
+        console.error("Logout error:", err);
+      } finally {
+        window.location.href = '../index.html';
+      }
+    });
+  }
+
+  // 🚀 BILOWGA NIDAAMKA READ PRACTICE (NIDAMKA AMMAANKA AH EE ADAG)
   async function initReadingLessons() {
     try {
+      // Hubi in LinguaAuth uu diyaar yahay
+      if (!window.LinguaAuth || typeof window.LinguaAuth.currentUser !== 'function') {
+        console.warn("LinguaAuth system is still loading, retrying...");
+        setTimeout(initReadingLessons, 100); // Isku day mar kale 100ms ka dib
+        return;
+      }
+
       // 1. Sug xogta isticmaalaha hadda galay (Supabase Session)
       const user = await window.LinguaAuth.currentUser();
       if (!user) {
-        // Haddaanu user jirin, u dhiib bogga hore
+        // Haddaanu user jirin, u dhiib bogga hore ee log-in
         window.location.href = '../index.html';
         return;
       }
@@ -257,31 +280,28 @@
       // 2. Isku xir kaydka progress-ka iyo aqoonsiga gaarka ah ee user-ka (user.id)
       if (window.LinguaProgress && typeof window.LinguaProgress.initUser === 'function') {
         window.LinguaProgress.initUser(user.id);
+      } else {
+        console.warn("LinguaProgress was not initialized properly!");
       }
 
       // 3. Hadda rux mishiinka su'aalaha casharka adoo isticmaalaya progress-ka saxda ah
       if (typeof initLessonQuizEngine === 'function') {
         initLessonQuizEngine('reading', READING_LEVELS);
+      } else {
+        console.error("Quiz engine (initLessonQuizEngine) could not be loaded.");
       }
     } catch (err) {
       console.error("Reading initialization failed:", err);
     }
   }
 
-  // Samee initialization markuu DOM-ku diyaar yahay
-  document.addEventListener('DOMContentLoaded', initReadingLessons);
-
-  // Logout oo loogu talagalay Supabase Cloud Auth tirtiridda session-ka
-  document.getElementById('logout-link').addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-      await window.LinguaAuth.logout();
-    } catch (err) {
-      console.error("Logout error:", err);
-    } finally {
-      window.location.href = '../index.html';
-    }
-  });
+  // Nidaamka "State-Check" ee ka hortagaya ruxitaanka fadhiidnimada ah (Race Condition)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReadingLessons);
+  } else {
+    // Haddii boggu mar hore diyaar ahaa, toos u kici shaqada
+    initReadingLessons();
+  }
 </script>
 </body>
 </html>
