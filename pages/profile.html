@@ -352,9 +352,55 @@
     });
   }
 
-  const user = window.LinguaAuth.currentUser();
+  // 🚀 BILOWGA NIDAAMKA PROFIILKA IYO SOO DEJINTA PROGRESS-KA USER KASTA OO GAAR AH
+  async function initProfile() {
+    try {
+      const user = await window.LinguaAuth.currentUser();
+      if (!user) {
+        window.location.href = '../index.html';
+        return;
+      }
 
-  function renderAvatar(el) {
+      // 1. Deji macluumaadka guud ee isticmaalaha
+      document.getElementById('profile-name').textContent = user.name || 'User';
+      document.getElementById('profile-email').textContent = user.email || '';
+      document.getElementById('profile-level').textContent = user.level || 'A1';
+      if (user.createdAt) {
+        document.getElementById('p-since').textContent = new Date(user.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+
+      // 2. Muuji sawirka isticmaalaha (Avatar)
+      const avatarEl = document.getElementById('profile-avatar');
+      renderAvatar(user, avatarEl);
+
+      // 3. 🎯 PROGRESS-KA USER-KA OO LAGA DHIGAY MID GOONI AH
+      // Waxay dhalinaysaa furaha progress-ka ee u gaarka ah isticmaalaha iyadoo la isticmaalayo user.id
+      if (window.LinguaProgress && typeof window.LinguaProgress.initUser === 'function') {
+        window.LinguaProgress.initUser(user.id);
+      }
+
+      // Soo deji stats-ka rasmiga ah ee isticmaalahan gaarka ah
+      const stats = window.LinguaProgress.stats(36, 12);
+      document.getElementById('p-xp').textContent = stats.xp;
+      document.getElementById('p-streak').textContent = stats.streak;
+      document.getElementById('p-listening').textContent = `${stats.listeningDone} / 36`;
+      document.getElementById('p-speaking').textContent = stats.speakingAvg + '%';
+
+      const sectionStats = window.LinguaProgress.sectionStats ? window.LinguaProgress.sectionStats() : { reading: 0, vocabulary: 0, grammar: 0 };
+      document.getElementById('p-reading').textContent = `${sectionStats.reading} / 36`;
+      document.getElementById('p-vocabulary').textContent = `${sectionStats.vocabulary} / 36`;
+      document.getElementById('p-grammar').textContent = `${sectionStats.grammar} / 36`;
+
+      // 4. Badhanka beddelaadda sawirka
+      setupAvatarUpload(user);
+
+    } catch (err) {
+      console.error("Profile initialization failed:", err);
+      window.location.href = '../index.html';
+    }
+  }
+
+  function renderAvatar(user, el) {
     if (user && user.avatar) {
       el.style.backgroundImage = `url(${user.avatar})`;
       el.textContent = '';
@@ -366,35 +412,36 @@
     }
   }
 
-  if (user) {
-    document.getElementById('profile-name').textContent = user.name || 'User';
-    document.getElementById('profile-email').textContent = user.email || '';
-    document.getElementById('profile-level').textContent = user.level || 'A1';
-    if (user.createdAt) {
-      document.getElementById('p-since').textContent = new Date(user.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  function setupAvatarUpload(user) {
+    const uploadBtn = document.getElementById('avatar-upload-btn');
+    const inputEl = document.getElementById('avatar-input');
+    const avatarEl = document.getElementById('profile-avatar');
+
+    if (uploadBtn && inputEl) {
+      uploadBtn.addEventListener('click', () => inputEl.click());
+
+      inputEl.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async () => {
+          try {
+            await window.LinguaAuth.updateUser({ avatar: reader.result });
+            // Cusboonaysii sawirka isla goobta
+            user.avatar = reader.result;
+            renderAvatar(user, avatarEl);
+            if (window.showToast) window.showToast('Sawirka waa la beddelay ✅');
+          } catch (err) {
+            console.error("Avatar update failed:", err);
+          }
+        };
+        reader.readAsDataURL(file);
+      });
     }
-    renderAvatar(document.getElementById('profile-avatar'));
   }
 
-  document.getElementById('avatar-upload-btn').addEventListener('click', () => {
-    document.getElementById('avatar-input').click();
-  });
-
-  document.getElementById('avatar-input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async () => {
-      try {
-        await window.LinguaAuth.updateUser({ avatar: reader.result });
-        renderAvatar(document.getElementById('profile-avatar'));
-        if (window.showToast) window.showToast('Sawirka waa la beddelay ✅');
-      } catch (err) {
-        console.error("Avatar update failed:", err);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
+  // Samee initialization markuu boggu dhasho
+  document.addEventListener('DOMContentLoaded', initProfile);
 
   // Logout oo asynchronous laga dhigay si uu u nadiifiyo session-ka daruuraha (Supabase Cloud)
   document.getElementById('logout-link').addEventListener('click', async (e) => {
@@ -407,17 +454,6 @@
       window.location.href = '../index.html';
     }
   });
-
-  const stats = window.LinguaProgress.stats(36, 12);
-  document.getElementById('p-xp').textContent = stats.xp;
-  document.getElementById('p-streak').textContent = stats.streak;
-  document.getElementById('p-listening').textContent = `${stats.listeningDone} / 36`;
-  document.getElementById('p-speaking').textContent = stats.speakingAvg + '%';
-
-  const sectionStats = window.LinguaProgress.sectionStats ? window.LinguaProgress.sectionStats() : { reading: 0, vocabulary: 0, grammar: 0 };
-  document.getElementById('p-reading').textContent = `${sectionStats.reading} / 36`;
-  document.getElementById('p-vocabulary').textContent = `${sectionStats.vocabulary} / 36`;
-  document.getElementById('p-grammar').textContent = `${sectionStats.grammar} / 36`;
 </script>
 </body>
 </html>

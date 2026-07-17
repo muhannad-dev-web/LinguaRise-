@@ -459,12 +459,12 @@
   // 🚀 KOODHKA CUSUB EE SUPABASE DHALAALINAYA
   async function loadDashboard() {
     try {
-      // 1. Soo qaado xogta qofka hadda fadhiya (asynchronous)
+      // 1. Soo qaado xogta qofka hadda fadhiya (asynchronous) ee Supabase ku dhex jirta
       const user = await window.LinguaAuth.currentUser();
       
       if (!user) {
-        // Haddii qofna aanu saarayn, u dir login-ka
-        window.location.href = 'auth.html';
+        // CADDEYN: Haddii aanu user jirin, u weeci bogga weyn ee HOME (index.html) halkii aad u diri lahayd auth.html
+        window.location.href = '../index.html'; 
         return;
       }
 
@@ -481,14 +481,13 @@
         avatarEl.textContent = user.name.trim().split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
       }
 
-      // 4. Kasoo qaado dhibcaha XP iyo Lesson-nada uu dhameeyay Supabase
+      // 4. Kasoo qaado dhibcaha XP iyo horumarkiisa si toos ah database-ka (Nidaamkan wuxuu ka hortagayaa in moobilada la wadaago ay isku dhex-daataan)
       const xp = user.progress ? (user.progress.xp || 0) : 0;
       const completedList = user.progress ? (user.progress.completed_lessons || []) : [];
 
-      // 5. Ku shub stats-ka dhabta ah ee Supabase
+      // 5. Ku shub stats-ka dhabta ah ee qofka hadda fadhiya
       document.getElementById('stat-xp').textContent = xp;
       
-      // Haddii aad u baahantahay xisaabinta dhibco kale, waxaad si toos ah uga ogaan kartaa cashirada
       const totalLessons = 36; 
       const completedCount = completedList.length;
       const percentage = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
@@ -497,6 +496,8 @@
 
     } catch (err) {
       console.error("Dashboard-ka waa uu rori waayey:", err);
+      // Haddii error dhaco, u weeci bogga Home ee weyn
+      window.location.href = '../index.html';
     }
   }
 
@@ -507,6 +508,7 @@
   document.getElementById('logout-link').addEventListener('click', async (e) => {
     e.preventDefault();
     await window.LinguaAuth.logout();
+    window.location.href = '../index.html'; // Markuu qofku baxona u weeci bogga weyn
   });
 </script>
 </body>

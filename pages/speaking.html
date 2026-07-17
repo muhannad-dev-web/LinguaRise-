@@ -287,6 +287,36 @@
     });
   }
 
+  // 🚀 BILOWGA NIDAAMKA SPEAK PRACTICE (USER-SPECIFIC ENGINE INITIALIZATION)
+  async function initSpeakingLessons() {
+    try {
+      // 1. Sug xogta isticmaalaha hadda galay (Supabase Session)
+      const user = await window.LinguaAuth.currentUser();
+      if (!user) {
+        // Haddaanu user jirin, u dhiib bogga hore
+        window.location.href = '../index.html';
+        return;
+      }
+
+      // 2. Isku xir kaydka progress-ka iyo aqoonsiga gaarka ah ee user-ka (user.id)
+      if (window.LinguaProgress && typeof window.LinguaProgress.initUser === 'function') {
+        window.LinguaProgress.initUser(user.id);
+      }
+
+      // 3. Marka progress-ka la diyaariyo, rux nidaamka ku dhawaaqista iyo hadalka (Speaking logic)
+      if (typeof initSpeaking === 'function') {
+        initSpeaking();
+      } else if (typeof renderSpeakingLessons === 'function') {
+        renderSpeakingLessons();
+      }
+    } catch (err) {
+      console.error("Speaking initialization failed:", err);
+    }
+  }
+
+  // Samee initialization markuu DOM-ku diyaar yahay
+  document.addEventListener('DOMContentLoaded', initSpeakingLessons);
+
   // Logout oo loogu talagalay Supabase Cloud Auth tirtiridda session-ka
   document.getElementById('logout-link').addEventListener('click', async (e) => {
     e.preventDefault();
