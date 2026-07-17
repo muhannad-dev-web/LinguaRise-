@@ -3,16 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Favicon SVG ah oo si toos ah u dhalinaya astaanta "LR" ee Header-kaaga -->
+<!-- Favicon SVG -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232563EB'/%3E%3Ctext x='50%25' y='65%25' font-family='sans-serif' font-weight='bold' font-size='50' fill='white' text-anchor='middle'%3ELR%3C/text%3E%3C/svg%3E">
 <title>Reading Practice — LinguaRise</title>
 
-<!-- Supabase CDN waa inuu halkan ugu horreeyaa si uu auth.js iyo auth-guard.js ula shaqeeyo -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/theme.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/auth-guard.js"></script>
-
+<!-- CSS Faylasha kaliya ayaa halkan ku haraya -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght=500;600;700&family=Inter:wght=400;500;600;700&family=JetBrains+Mono:wght=500;700&display=swap" rel="stylesheet">
@@ -23,7 +18,6 @@
 <link rel="stylesheet" href="../css/app-layout.css">
 
 <style>
-  /* CSS-kan wuxuu xallinayaa cilladda responsive-ka ee desktop, tablet iyo mobile */
   .app-content-wrapper {
     flex: 1;
     min-width: 0; 
@@ -32,7 +26,6 @@
     width: 100%;
   }
 
-  /* Styling-ka Sidebar Scrolling-ka u oggolaanaya */
   .app-sidebar {
     display: flex;
     flex-direction: column;
@@ -43,37 +36,28 @@
 
   .sidebar-nav {
     flex: 1;
-    overflow-y: auto; /* Waxay oggolaanaysaa in menu-yada la dhex scroll-gareeyo */
+    overflow-y: auto; 
     padding-right: var(--space-2);
   }
 
-  /* Naqshadaynta quruxda badan ee Scrollbar-ka sidebar-ka dhexdiisa ah */
-  .sidebar-nav::-webkit-scrollbar {
-    width: 4px;
-  }
-  .sidebar-nav::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  .sidebar-nav::-webkit-scrollbar { width: 4px; }
+  .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
   .sidebar-nav::-webkit-scrollbar-thumb {
     background: var(--border-color, rgba(255, 255, 255, 0.1));
     border-radius: var(--radius-full);
   }
 
-  /* Badhanka mobilka desktop-ka waa inuu ku qarsoonaadaa */
-  button.sidebar-toggle-mobile {
-    display: none !important;
-  }
+  button.sidebar-toggle-mobile { display: none !important; }
 
   /* ==========================================
-      KAYDKA RESPONSIVE-KA (MOBILE RESPONSIVE CSS)
-      ========================================== */
+     MOBILES/TABLETS STYLES
+     ========================================== */
   @media (max-width: 768px) {
     .app-shell {
       display: flex;
       flex-direction: column;
     }
 
-    /* QASAB INUU SOO MUUQDO MENU ICON-KA */
     button.sidebar-toggle-mobile {
       display: flex !important; 
       align-items: center;
@@ -86,10 +70,9 @@
       border-radius: 8px !important;
       width: 40px !important;
       height: 40px !important;
-      z-index: 1000 !important;
+      z-index: 10000 !important;
     }
 
-    /* Hubi midabka SVG-ga inuu cad yahay */
     button.sidebar-toggle-mobile svg {
       width: 24px !important;
       height: 24px !important;
@@ -97,7 +80,6 @@
       display: block !important;
     }
 
-    /* In sidebar-ka la qariyo marka hore */
     .app-sidebar {
       position: fixed;
       left: -280px;
@@ -109,12 +91,10 @@
       box-shadow: 4px 0 15px rgba(0, 0, 0, 0.3);
     }
 
-    /* Marka la furo (active) */
     .app-sidebar.active {
-      left: 0;
+      left: 0 !important;
     }
 
-    /* Hagaajinta Topbar-ka iyo Main-ka ee mobilada */
     .app-topbar {
       padding: var(--space-4) !important;
       display: flex;
@@ -127,9 +107,56 @@
       padding: var(--space-4) !important;
     }
   }
+
+  /* Debugger Console Style */
+  #debug-console {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: #7f1d1d;
+    color: #fca5a5;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 12px;
+    max-width: 350px;
+    z-index: 100000;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    border: 1px solid #f87171;
+  }
 </style>
 </head>
 <body>
+
+<!-- Sanduuqa Qaladaadka lagu baaro (Kaliya wuxuu soo muuqanayaa haddii qalad jiro) -->
+<div id="debug-console">
+  <strong>System Error Detected:</strong>
+  <div id="debug-message" style="margin-top: 5px; white-space: pre-wrap;"></div>
+</div>
+
+<script>
+  // Ka hortagga in boggu madoobaado haddii CSS uu soo daaho
+  (function() {
+    try {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    } catch(e) {}
+  })();
+
+  // Qalad-qabte caalami ah (Global Error Handler)
+  window.onerror = function(message, source, lineno, colno, error) {
+    const consoleDiv = document.getElementById('debug-console');
+    const msgDiv = document.getElementById('debug-message');
+    if (consoleDiv && msgDiv) {
+      consoleDiv.style.display = 'block';
+      msgDiv.textContent = `${message}\n\nFile: ${source.split('/').pop()}\nLine: ${lineno}`;
+    }
+    return false;
+  };
+</script>
 
 <div class="app-shell">
 
@@ -218,65 +245,72 @@
   </div>
 </div>
 
+<!-- =======================================================
+     AAD U MUHIIM: JAVASCRIPT-KA OO LA RARAYO SIDA AY ISUGU XIRAN YIHIIN (ORDER)
+     ======================================================= -->
+<!-- 1. Supabase & Auth kii ugu horeeyay oo caadi ah (Caan ah) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/theme.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/auth-guard.js"></script>
+
+<!-- 2. Progress store iyo data-da casharada -->
 <script src="../js/progress-store.js"></script>
-<script src="../js/app-sidebar.js"></script>
-<script src="../js/main.js"></script>
+<script src="../js/reading-data.js"></script>
+
+<!-- 3. Dynamic UI generators (kuwa dhisa badhamada iyo casharada) -->
 <script src="../js/certificate.js"></script>
 <script src="../js/quiz-engine.js"></script>
-<script src="../js/reading-data.js"></script>
+<script src="../js/app-sidebar.js"></script>
+<script src="../js/main.js"></script>
+
 <script>
   // ==========================================
-  // 1. MOBILE MENU SYSTEM (KA HORTAGISTA CLICKS MULTIPLE)
+  // BADHAMADA CORE-KA AH EE BOGGA
   // ==========================================
-  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  const appSidebar = document.getElementById('appSidebar');
+  document.addEventListener('DOMContentLoaded', () => {
+    const btnMenu = document.getElementById('mobileMenuBtn');
+    const sidebar = document.getElementById('appSidebar');
+    const btnTheme = document.getElementById('localThemeToggle');
 
-  if (mobileMenuBtn && appSidebar) {
-    // Ka hortag click-yada badan adoo isticmaalaya dhacdo nadiif ah
-    mobileMenuBtn.onclick = (e) => {
-      e.stopPropagation();
-      appSidebar.classList.toggle('active');
-    };
+    // 1. MOBILE MENU CLICK EVENT
+    if (btnMenu && sidebar) {
+      btnMenu.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        sidebar.classList.toggle('active');
+      };
 
-    document.onclick = (e) => {
-      if (appSidebar.classList.contains('active') && !appSidebar.contains(e.target) && e.target !== mobileMenuBtn) {
-        appSidebar.classList.remove('active');
-      }
-    };
-  }
-
-  // ==========================================
-  // 2. DARK MODE / THEME SYSTEM (BUUXA OO TOOS AH)
-  // ==========================================
-  const themeToggle = document.getElementById('localThemeToggle');
-  
-  function updateThemeUI(isDark) {
-    if (isDark) {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      themeToggle.setAttribute('aria-pressed', 'true');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-      themeToggle.setAttribute('aria-pressed', 'false');
+      document.onclick = (e) => {
+        if (sidebar.classList.contains('active') && !sidebar.contains(e.target) && e.target !== btnMenu) {
+          sidebar.classList.remove('active');
+        }
+      };
     }
-  }
 
-  // Bilowga hore ee mawduuca (Theme Initialization)
-  const savedTheme = localStorage.getItem('theme');
-  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  let isDarkMode = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
-  updateThemeUI(isDarkMode);
-
-  if (themeToggle) {
-    themeToggle.onclick = (e) => {
-      e.preventDefault();
-      isDarkMode = !isDarkMode;
-      localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-      updateThemeUI(isDarkMode);
-    };
-  }
+    // 2. DARK MODE TOGGLE
+    if (btnTheme) {
+      btnTheme.onclick = (e) => {
+        e.preventDefault();
+        const isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isCurrentlyDark) {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem('theme', 'light');
+          btnTheme.setAttribute('aria-pressed', 'false');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme', 'dark');
+          btnTheme.setAttribute('aria-pressed', 'true');
+        }
+      };
+      
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      btnTheme.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    }
+  });
 
   // ==========================================
-  // 3. LOGOUT EVENT LISTENER
+  // 3. LOGOUT EVENT
   // ==========================================
   const logoutLink = document.getElementById('logout-link');
   if (logoutLink) {
@@ -295,12 +329,11 @@
   }
 
   // ==========================================
-  // 🚀 BILOWGA NIDAAMKA READ PRACTICE (USER-SPECIFIC ENGINE)
+  // 🚀 BILOWGA NIDAAMKA READ PRACTICE
   // ==========================================
   async function initReadingLessons() {
     try {
       if (!window.LinguaAuth || typeof window.LinguaAuth.currentUser !== 'function') {
-        console.warn("LinguaAuth system is still loading, retrying...");
         setTimeout(initReadingLessons, 100);
         return;
       }
@@ -313,21 +346,21 @@
 
       if (window.LinguaProgress && typeof window.LinguaProgress.initUser === 'function') {
         window.LinguaProgress.initUser(user.id);
-      } else {
-        console.warn("LinguaProgress was not initialized properly!");
       }
 
-      if (typeof initLessonQuizEngine === 'function') {
+      // Hubi in READING_LEVELS iyo Engine-ku ay diyaar yihiin
+      if (typeof initLessonQuizEngine === 'function' && typeof READING_LEVELS !== 'undefined') {
         initLessonQuizEngine('reading', READING_LEVELS);
       } else {
-        console.error("Quiz engine (initLessonQuizEngine) could not be loaded.");
+        console.warn("Quiz engine or reading data is missing. Retrying...");
+        setTimeout(initReadingLessons, 200);
       }
     } catch (err) {
       console.error("Reading initialization failed:", err);
     }
   }
 
-  // Hubi rarka bogga (Race Condition Safeguard)
+  // Toos u kici rarka ka dib
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initReadingLessons);
   } else {
